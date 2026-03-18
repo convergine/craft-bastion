@@ -1,0 +1,53 @@
+{% import "_includes/forms" as forms %}
+{% block header %}
+    <header class="pane-header so-visible">
+        <h2 style="line-height: 34px">{{ title }}</h2>
+    </header>
+{% endblock %}
+
+{% block body %}
+    <div class="so-body " style="padding-top: 0">
+        {% if domainData.isNeverRun or domainData.isLocal %}
+            <div class="warning mt-24">{{ 'settingsNeedLaunch'|t('craft-bastion') }}</div>
+        {% endif %}
+        <form method="post" accept-charset="UTF-8" id="domain-edit" class="{% if domainData.isNeverRun or domainData.isLocal %}disabled-content{% endif %}">
+
+
+            {{ csrfInput() }}
+            {{ actionInput('craft-bastion/base/save-settings') }}
+            {{ hiddenInput('settingsType', 'settings_domain' ) }}
+
+            {{ forms.lightswitchField({
+                label: "Send domain expiry reminders?"|t('craft-bastion'),
+                id: 'enableDomainReminder',
+                name: 'settings[enableDomainReminder]',
+                on: settings.enableDomainReminder,
+                toggle: 'domainReminderRecipientsCont'
+            }) }}
+            <div id="domainReminderRecipientsCont">
+                {{ forms.textField({
+                    label: "Notification Emails"|t('craft-bastion'),
+                    id: 'domainReminderRecipients',
+                    name: 'settings[domainReminderRecipients]',
+                    value: settings.domainReminderRecipients,
+                    class: 'required',
+                    instructions: "domainExpiryDateDescription"|t('craft-bastion')
+                }) }}
+            </div>
+
+
+
+        </form>
+    </div>
+    <div class="so-footer">
+        <div class="so-notice"></div>
+        <div class="flex-grow"></div>
+        <div class="flex flex-nowrap">
+            <button type="button" class="btn js-popup-close">{{ 'Cancel'|t('craft-bastion') }}</button>
+            <div class="{% if domainData.isNeverRun or domainData.isLocal %}disabled-content{% endif %}">
+             <button type="submit" class="btn submit" form="domain-edit">{{ 'Save'|t('craft-bastion') }}</button>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+

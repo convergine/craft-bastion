@@ -1,0 +1,60 @@
+{% import "_includes/forms" as forms %}
+{% block header %}
+    <header class="pane-header so-visible">
+        <h2 style="line-height: 34px">{{ title }}</h2>
+    </header>
+{% endblock %}
+
+{% block body %}
+    <div class="so-body " style="padding-top: 0">
+        <form method="post" accept-charset="UTF-8" id="disk-space-edit">
+
+
+            {{ csrfInput() }}
+            {{ actionInput('craft-bastion/base/save-settings') }}
+            {{ hiddenInput('settingsType', 'settings_disk_space' ) }}
+
+            {{ forms.lightswitchField({
+                label: "Send disk space usage reminders?"|t('craft-bastion'),
+                id: 'enableDiskSpaceReminder',
+                name: 'settings[enableDiskSpaceReminder]',
+                on: settings.enableDiskSpaceReminder,
+                toggle: 'diskSpaceThresholdCont'
+            }) }}
+            <div id="diskSpaceThresholdCont">
+                
+                    {{ forms.textField({
+                        label: "When disk is % or more full"|t('craft-bastion'),
+                        id: 'diskSpaceThreshold',
+                        name: 'settings[diskSpaceThreshold]',
+                        value: settings.diskSpaceThreshold,
+                        type: 'number',
+                        min: 1,
+                        max: 100,
+                        class: 'required',
+                        instructions: "Set the disk usage percentage threshold (1-100%) for sending reminders"|t('craft-bastion')
+                    }) }}
+                
+                    {{ forms.textField({
+                        label: "Notification Emails"|t('craft-bastion'),
+                        id: 'diskSpaceReminderRecipients',
+                        name: 'settings[diskSpaceReminderRecipients]',
+                        value: settings.diskSpaceReminderRecipients,
+                        class: 'required',
+                        instructions: "diskSpaceReminderRecipients"|t('craft-bastion')
+                    }) }}
+                
+            </div>
+
+        </form>
+    </div>
+    <div class="so-footer">
+        <div class="so-notice"></div>
+        <div class="flex-grow"></div>
+        <div class="flex flex-nowrap">
+            <button type="button" class="btn js-popup-close">{{ 'Cancel'|t('craft-bastion') }}</button>
+            <button type="submit" class="btn submit" form="disk-space-edit">{{ 'Save'|t('craft-bastion') }}</button>
+        </div>
+    </div>
+{% endblock %}
+

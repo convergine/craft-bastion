@@ -1,0 +1,81 @@
+{% extends '_layouts/cp' %}
+
+{% set plugin = craft.app.getModule('craft-bastion') %}
+{% set crumbs = [
+    { label: 'Craft Bastion'|t('craft-bastion')  , url: url('craft-bastion') },
+    { label: 'Updates Reminder'|t('craft-bastion')  , url: url('craft-bastion/ip-restrictions') },
+] %}
+{% set selectedSubnavItem = 'ip-restrictions' %}
+
+{% set title = 'Updates Reminder'|t('craft-bastion') %}
+{% set fullPageForm = true %}
+{# % set contentNotice ='ipRestrictionsDescription'|t('craft-bastion') %#}
+
+{% set daysList = [] %}
+{% for day in settings.getDays() %}
+    {% set daysList = daysList|merge([{label:day,value:day}]) %}
+{% endfor %}
+
+{% set frequencyList = [] %}
+{% for freq in settings.getFrequency() %}
+    {% set frequencyList = frequencyList|merge([{label:freq,value:freq}]) %}
+{% endfor %}
+
+{% block content %}
+
+
+    {% import "_includes/forms" as forms %}
+    {{ actionInput('craft-bastion/settings/save-settings') }}
+    {{ hiddenInput('settingsType','settings_updates_reminder') }}
+
+    {{ 'updatesReminderDescription'|t('craft-bastion')|raw }}
+
+
+    {% namespace "settings" %}
+        {{ forms.lightswitchField({
+            label: 'Enabled for the control panel'|t('craft-bastion'),
+            id: 'updatesEnabled',
+            name: 'updatesEnabled',
+            on: settings.updatesEnabled,
+            toggle: 'reminderSettings',
+            instructions: 'Notify About Available Updates'|t('craft-bastion')
+        }) }}
+        <div id="reminderSettings" class="{% if settings.updatesEnabled%}{% else %}hidden{% endif %}">
+            {{ forms.textField({
+                label: "Email Addresses"|t('craft-bastion'),
+                id: 'emailAddresses',
+                name: 'emailAddresses',
+                value: settings.emailAddresses,
+                class: 'required',
+                instructions: "updatesReminderEmails"|t('craft-bastion'),
+                errors: settings.getErrors('emailAddresses'),
+            }) }}
+
+            {{ forms.selectizeField({
+                label: 'Notification Day'|t('craft-bastion'),
+                id: 'notifyDayOfWeek',
+                name: 'notifyDayOfWeek',
+                options: daysList,
+                value: settings.notifyDayOfWeek,
+                instructions: "updatesReminderNotificationDayDescription"|t('craft-bastion')
+            }) }}
+
+            {{ forms.selectizeField({
+                label: 'Notification Frequency'|t('craft-bastion'),
+                id: 'frequency',
+                name: 'frequency',
+                options: frequencyList,
+                value: settings.frequency,
+                instructions: "updatesReminderNotificationFrequency"|t('craft-bastion')
+            }) }}
+        </div>
+
+    {% endnamespace %}
+{% endblock %}
+{% css %}
+
+{% endcss %}
+{% js %}
+{# language=JavaScript #}
+
+{% endjs %}

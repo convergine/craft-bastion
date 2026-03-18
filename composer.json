@@ -1,0 +1,41 @@
+{
+    "name": "convergine/craft-bastion",
+    "description": "Craft Bastion plugin",
+    "type": "craft-plugin",
+    "version": "1.0.0",
+    "keywords": [
+        "craftcms"
+    ],
+    "support": {
+        "issues": "https://github.com/convergine/craft-bastion/issues?state=open",
+        "source": "https://github.com/convergine/craft-bastion",
+        "docs": "https://github.com/convergine/craft-bastion/blob/master/README.md",
+        "support": {
+            "email": "info@convergine.com"
+        }
+    },
+    "license": "proprietary",
+    "authors": [
+        {
+            "name": "Convergine Corp.",
+            "homepage": "https://www.convergine.com"
+        }
+    ],
+    "require": {
+        "craftcms/cms": "^5.0.0",
+        "s1lentium/iptools": "^1.2.0"
+    },
+    "autoload": {
+        "psr-4": {
+          "convergine\\craftbastion\\": "src/"
+        }
+    },
+    "extra": {
+        "name": "Craft Bastion",
+        "handle": "craft-bastion",
+        "hasCpSettings": true,
+        "hasCpSection": false,
+        "changelogUrl": "https://github.com/convergine/craft-bastion/blob/master/CHANGELOG.md",
+        "class": "convergine\\craftbastion\\BastionPlugin"
+    }
+}

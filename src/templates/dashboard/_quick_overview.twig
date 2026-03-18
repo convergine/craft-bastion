@@ -1,0 +1,48 @@
+{% set _siteUrl =  siteUrl ends with '/' ? siteUrl|slice(0, -1) : siteUrl %}
+{% set adminUrl =  _siteUrl ~ '/' ~ craft.app.config.general.cpTrigger %}
+<section class="card quick-overview">
+    <div class="card-header">
+        <h3>{{ 'Quick Overview'|t('craft-bastion') }}</h3>
+    </div>
+
+    <div class="card-content">
+        <div>
+            <h3>{{ 'Environment Check'|t('craft-bastion') }} <span class="bastion-tooltip" data-text="{{ 'tooltipEnvironment'|t('craft-bastion') }}"></span></h3>
+            {% if getenv('CRAFT_ENVIRONMENT') == 'production' %}
+                <p>{{ 'Environment set'|t('craft-bastion') }}: <span class="success"><code>{{ getenv('CRAFT_ENVIRONMENT') }}</code></span></p>
+            {% else %}
+                <p>{{ 'Environment set'|t('craft-bastion') }}: <span class="warning"><code>{{ getenv('CRAFT_ENVIRONMENT') }}</code></span></p>
+            {% endif %}
+
+            {% if isDev %}
+                <p>{{ 'Development mode'|t('craft-bastion') }}: <span class="warning"><code>{{ 'ENABLED'|t('craft-bastion') }}</code></span></p>
+            {% else %}
+                <p{{ 'Development mode'|t('craft-bastion') }}: <span class="success"><code>{{ 'BLOCKED'|t('craft-bastion') }}</code></span></p>
+            {% endif %}
+
+            <hr>
+            <h3>{{ 'Site Indexing'|t('craft-bastion') }} <span class="bastion-tooltip" data-text="{{ 'tooltipIndexing'|t('craft-bastion') }}"></span></h3>
+            {% if craftIndexing.result %}
+                {% if liveIndexing.res %}
+                    <p>{{ 'Search Engine Visibility'|t('craft-bastion') }}: <span class="success"><code>{{ 'ENABLED'|t('craft-bastion') }}</code></span></p>
+                    <p class="success">{{ 'Indexing allowed — no restrictions detected.'|t('craft-bastion') }}</p>
+                {% else %}
+                    <p>{{ 'Search Engine Visibility'|t('craft-bastion') }}: <span class="warning"><code>{{ 'BLOCKED'|t('craft-bastion') }}</code></span></p>
+                    {{ liveIndexing.message|raw }}
+                {% endif %}
+            {% else %}
+                <p>{{ 'Search Engine Visibility'|t('craft-bastion') }}: <span class="warning"><code>{{ 'BLOCKED'|t('craft-bastion') }}</code></span></p>
+                <p class="warning">{{ craftIndexing.message|raw }}</p>
+            {% endif %}
+            <hr>
+            <h3>{{ 'Control Panel Check'|t('craft-bastion') }} <span class="bastion-tooltip" data-text='{{ 'controlPanelCheckInstructions'|t('craft-bastion',{adminUrl:_siteUrl})|raw }}'></span></h3>
+            {% if craft.app.config.general.cpTrigger == 'admin' %}
+                <p>{{ 'controlPanelCheckGood'|t('craft-bastion',{status:'warning',adminUrl:('/' ~ craft.app.config.general.cpTrigger)})|raw }}
+                    </p>
+
+            {% else %}
+                <p>{{ 'controlPanelCheckGood'|t('craft-bastion',{status:'success',adminUrl:_siteUrl})|raw }} </p>
+            {% endif %}
+        </div>
+    </div>
+</section>

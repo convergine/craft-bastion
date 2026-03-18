@@ -1,0 +1,36 @@
+{% import "_includes/forms" as forms %}
+{% block header %}
+    <header class="pane-header so-visible">
+        <h2 style="line-height: 34px">{{ title }}</h2>
+    </header>
+{% endblock %}
+
+{% block body %}
+    <div class="so-body " style="padding-top: 0">
+
+        <form method="post" accept-charset="UTF-8" id="audit-edit">
+
+
+            {{ csrfInput() }}
+            {{ actionInput('craft-bastion/dashboard/save') }}
+            {{ hiddenInput('settingsType', 'audit' ) }}
+            <div class="field">
+                <div class="heading">{{ 'Title'|t('craft-bastion') }}</div>
+                <div class="input">
+                    <input type="text" class="text fullwidth" required name="title" value="">
+                </div>
+            </div>
+
+
+        </form>
+    </div>
+    <div class="so-footer">
+        <div class="so-notice"></div>
+        <div class="flex-grow"></div>
+        <div class="flex flex-nowrap">
+            <button type="button" class="btn js-popup-close">{{ 'Cancel'|t('craft-bastion') }}</button>
+            <button type="submit" class="btn submit" form="audit-edit">{{ 'Save'|t('craft-bastion') }}</button>
+        </div>
+    </div>
+{% endblock %}
+

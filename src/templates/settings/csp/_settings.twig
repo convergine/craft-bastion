@@ -1,0 +1,45 @@
+{% import "_includes/forms" as forms %}
+<div id="settings">
+    <p>{{ 'cspDescription'|t('craft-bastion')|raw }}</p>
+    {% namespace "settings" %}
+
+        <div class="flex flex-justify items-baseline">
+
+            {{ forms.lightswitchField({
+                label: "Enable Content Security Policy (CSP)"|t('craft-bastion'),
+                instructions: "enableCSPDescription"|t('craft-bastion'),
+                name: 'cspEnabled',
+                on: settings.cspEnabled
+            }) }}
+
+            {{ forms.lightswitchField({
+                label: "Enable Additional Header Protections"|t('craft-bastion'),
+                instructions: "enableAdditionalHeaderProtectionsDescription"|t('craft-bastion'),
+                name: 'cspHeaderProtectionEnabled',
+                on: settings.cspHeaderProtectionEnabled
+            }) }}
+
+        </div>
+
+        {{ forms.selectField({
+            label: "CSP Mode",
+            name: 'cspMode',
+            options: settings.cspModeOptions,
+            value: settings['cspMode'],
+            instructions: 'cspModeDescription'|t('craft-bastion')
+        }) }}
+
+        <div class="field">
+            <div class="heading">
+                <label>{{ 'Apply Recommended Baseline Policy'|t('craft-bastion') }}</label>
+            </div>
+            <div id="settings-select220636930-instructions" class="instructions">
+                {{ 'applyRecommendedBaselinePolicyDescription'|t('craft-bastion') }}
+            </div>
+            <div class="input ltr">
+                <button type="submit" class="btn submit" form="cspDefaultSettingsForm" onclick="return confirm('{{ 'Are you sure to apply Recommended Baseline Policy?' }}')">{{ 'Apply'|t('app') }}</button>
+            </div>
+        </div>
+
+    {% endnamespace %}
+</div>

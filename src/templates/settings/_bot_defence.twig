@@ -1,0 +1,37 @@
+{% extends '_layouts/cp' %}
+
+{% set plugin = craft.app.getModule('craft-bastion') %}
+{% set crumbs = [
+    { label: 'Craft Bastion'|t('craft-bastion')  , url: url('craft-bastion') },
+    { label: 'Bot Defence'|t('craft-bastion')  , url: url('craft-bastion/bot-defence') },
+] %}
+{% set selectedSubnavItem = 'bot-defence' %}
+
+{% set title = 'Bot Defence'|t('craft-bastion') %}
+{% set fullPageForm = true %}
+
+
+{% block content %}
+
+
+    {% import "_includes/forms" as forms %}
+
+    {{ serverInfo['text']|raw }}
+    {% if serverInfo['canProtect'] %}
+        {{ actionInput('craft-bastion/base/bot-defence') }}
+        {{ forms.lightswitchField({
+            label: "Bot Defence"|t('craft-bastion'),
+            instructions: "",
+            name: 'bot_defence',
+            on: defence_enabled
+        }) }}
+
+    {% endif %}
+{% endblock %}
+{% css %}
+
+{% endcss %}
+{% js %}
+
+
+{% endjs %}

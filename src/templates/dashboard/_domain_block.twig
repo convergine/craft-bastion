@@ -1,0 +1,78 @@
+<!-- Domain Status Card -->
+{% set statusClass = '' %}
+{% if domainData.remainData.status is defined %}
+    {% set statusClass = 'domain-' ~ domainData.remainData.status %}
+{% endif %}
+
+
+<section class="card domain-card">
+    <div class="card-header">
+        <h3>{{ 'Domain Status'|t('craft-bastion') }}</h3>
+        <button class="settings-btn" aria-label="Domain Status Settings" data-settings="domain-settings">
+            <svg width="21" height="17" viewBox="0 0 21 17" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M2.77258 0.5V9.72855" stroke="#7B8793" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M17.8165 0.5V8.009" stroke="#7B8793" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M10.2902 0.5V1.71838" stroke="#7B8793" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M2.77257 14.2737C4.02768 14.2737 5.04515 13.2562 5.04515 12.0011C5.04515 10.746 4.02768 9.72852 2.77257 9.72852C1.51747 9.72852 0.5 10.746 0.5 12.0011C0.5 13.2562 1.51747 14.2737 2.77257 14.2737Z" stroke="#7B8793"/>
+        <path d="M9.8927 15.855C9.8927 15.6216 10.0742 15.4402 10.2902 15.4402C10.5148 15.4402 10.6963 15.6216 10.6963 15.855H9.8927ZM9.8927 16.3388V15.855H10.6963V16.3388H9.8927ZM10.6963 16.3388C10.6963 16.5635 10.5148 16.745 10.2902 16.745C10.0742 16.745 9.8927 16.5635 9.8927 16.3388H10.6963Z" fill="#7B8793"/>
+        <path d="M10.2902 6.28953C11.5453 6.28953 12.5628 5.27206 12.5628 4.01696C12.5628 2.76185 11.5453 1.74438 10.2902 1.74438C9.0351 1.74438 8.01764 2.76185 8.01764 4.01696C8.01764 5.27206 9.0351 6.28953 10.2902 6.28953Z" stroke="#7B8793"/>
+        <path d="M17.8165 12.5283C19.0716 12.5283 20.089 11.5108 20.089 10.2557C20.089 9.00062 19.0716 7.98315 17.8165 7.98315C16.5613 7.98315 15.5439 9.00062 15.5439 10.2557C15.5439 11.5108 16.5613 12.5283 17.8165 12.5283Z" stroke="#7B8793"/>
+        <path d="M2.77258 14.5415V16.3388" stroke="#7B8793" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M10.2902 6.80786V16.3388" stroke="#7B8793" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M17.8165 12.5195V16.3388" stroke="#7B8793" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        </button>
+    </div>
+    <div class="card-content">
+        <div class="domain-info {{statusClass}}" id="domain-info">
+            <div class="domain-name" id="domain-name">                    
+            <svg width="20" height="20" viewbox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <g clip-path="url(#clip0_7_15)">
+                            <path d="M9.99997 0C4.48594 0 0 4.48599 0 10C0 15.514 4.48594 20 9.99997 20C15.514 20 19.9999 15.5141 19.9999 10C19.9999 4.48599 15.5141 0 9.99997 0ZM8.45741 1.01607C7.64569 1.71098 6.86859 2.57609 6.24429 3.497C5.96314 3.91177 5.71036 4.34005 5.4859 4.7793H2.5325C3.90127 2.82722 6.01487 1.4342 8.45741 1.01607ZM9.55754 14.429H6.05516C5.52813 13.2868 5.16416 11.9691 5.10304 10.489H9.55754V14.429ZM1.98376 5.66417H5.07856C4.56215 6.92027 4.26991 8.24994 4.21764 9.6042H0.894072C0.955069 8.1831 1.34241 6.84517 1.98376 5.66417ZM0.898084 10.4891H4.21729C4.2682 11.8646 4.55755 13.1821 5.0811 14.4291H2.03579C1.37798 13.2509 0.973711 11.9129 0.898084 10.4891ZM2.59857 15.3139H5.4984C5.71956 15.7356 5.96845 16.1486 6.24588 16.552C6.98198 17.6223 7.77317 18.4184 8.44142 18.9812C6.04478 18.5666 3.96593 17.2129 2.59857 15.3139ZM9.55754 18.7349C8.5692 18.0111 7.40571 16.8567 6.51429 15.3139H9.55754V18.7349ZM9.55754 9.6042H5.10304C5.15814 8.22852 5.47109 6.9103 6.03711 5.66417H9.5576L9.55754 9.6042ZM9.55754 4.7793H6.48845C6.63924 4.51372 6.8017 4.25168 6.97667 3.99353C7.88761 2.64971 8.88616 1.76974 9.55754 1.27109V4.7793ZM19.106 9.6042H15.7824C15.7301 8.24994 15.4378 6.92027 14.9214 5.66417H18.0162C18.6575 6.84517 19.045 8.1831 19.106 9.6042ZM17.4676 4.7793H14.5142C14.2898 4.34005 14.0369 3.91177 13.7558 3.497C13.1315 2.57603 12.3542 1.71116 11.5424 1.01601C13.985 1.43414 16.0986 2.82716 17.4676 4.7793ZM10.4424 1.27103C11.1138 1.76968 12.1123 2.64965 13.0233 3.99348C13.1982 4.25162 13.3607 4.51366 13.5115 4.77924H10.4424V1.27103ZM10.4424 5.66417H13.9629C14.5289 6.9103 14.8419 8.22852 14.897 9.6042H10.4424V5.66417ZM10.4424 10.4891H14.897C14.8359 11.9692 14.4719 13.2868 13.9448 14.4291H10.4424V10.4891ZM10.4424 15.3139H13.4856C12.5942 16.8566 11.4307 18.0111 10.4424 18.7349V15.3139ZM11.5588 18.9812C12.227 18.4184 13.0181 17.6222 13.7541 16.5521C14.0316 16.1487 14.2804 15.7357 14.5016 15.314H17.4014C16.0341 17.2128 13.9553 18.5665 11.5588 18.9812ZM17.9642 14.429H14.919C15.4425 13.182 15.7319 11.8646 15.7828 10.489H19.1019C19.0262 11.9129 18.622 13.2509 17.9642 14.429Z" fill="#0F766E"/>
+                        </g>
+                        <defs>
+                            <clipPath id="clip0_7_15">
+                                <rect width="20" height="20" fill="white"/>
+                            </clipPath>
+                        </defs>
+                    </svg>
+<span>{{ domainData.domain }}</span></div>
+            {% if domainData.isLocal %}
+
+                <div class="domain-details">
+                    <div class="warning">{{ "Local development domain detected - can't run check"|t('craft-bastion') }}</div>
+                </div>
+            {% elseif domainData.isNeverRun %}
+                
+                <div class="domain-details">
+                    <div><label>{{ 'Expires'|t('craft-bastion') }}</label> <span id="expiry-date">--</span></div>
+                    <div><label>{{ 'Renew at'|t('craft-bastion') }}</label> <span id="registrar">--</span></div>
+                </div>
+            {% else %}
+                <div class="{% if domainData.expDate == null %} hidden{% endif %}">
+                
+                    <div class="domain-details ">
+                        <div><label>{{ 'Expires'|t('craft-bastion') }}</label> 
+                            <span id="expiry-date">
+                            {% if domainData.expDate != null %}
+                                
+                                {{'<b>{expDate}</b> in <b>{expDays}</b> days'|t('craft-bastion',{expDate:domainData.expDate,expDays:domainData.remainData.days})|raw}}
+                            {% else %}
+                                n/a
+                            {%endif%}
+                            </span></div>
+                        <div><label>{{ 'Renew at'|t('craft-bastion') }} <span id="registrar">
+                            {% if domainData.registrantLink %}
+                                <a href="{{ domainData.registrantLink }}" target="_blank">{{ domainData.registrant }}</a>
+                            {% else %}
+                                {{ domainData.registrant!=''?domainData.registrant:'--' }}
+                            {% endif %}
+                        </span></div>
+                    </div>
+                </div>
+            {% endif %}
+
+        </div>
+        <button class="btn btn-secondary" id="domain-check-btn" aria-label="Check Domain">{{ 'Check Domain'|t('craft-bastion') }}</button>
+    </div>
+</section>

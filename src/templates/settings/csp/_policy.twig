@@ -1,0 +1,30 @@
+{% import "_includes/forms" as forms %}
+<div id="policy" class="hidden">
+    {{ 'policySettingsDescription'|t('craft-bastion')|raw }}
+{% namespace "settings" %}
+
+    {% for obj, policy in settings.cspOptions %}
+        {% set tableName = 'cspEnabledOptions['~obj~']' %}
+
+
+        {{ forms.editableTableField({
+            label: ('`'~policy~'`')|md,
+            name: tableName,
+            addRowLabel: 'Add a policy'|t('craft-bastion'),
+            allowAdd: true,
+            allowDelete: true,
+            allowReorder: true,
+            cols: [
+                {
+                    type: "singleline",
+                    width: "100%",
+                    code: true,
+                },
+            ],
+            rows: settings.cspEnabledOptions[obj]??[]
+        }) }}
+
+    {% endfor %}
+
+{% endnamespace %}
+</div>

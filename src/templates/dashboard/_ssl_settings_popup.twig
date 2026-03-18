@@ -1,0 +1,58 @@
+{% import "_includes/forms" as forms %}
+{% set newerRun = settings.sslCertificateData|length ==0 %}
+{% block header %}
+    <header class="pane-header so-visible">
+        <h2 style="line-height: 34px">{{ title }}</h2>
+    </header>
+{% endblock %}
+
+{% block body %}
+    <div class="so-body" style="padding-top: 0">
+        {% if newerRun %}
+            <div class="warning mt-24">{{ 'settingsNeedLaunch'|t('craft-bastion') }}</div>
+        {% endif %}
+        <form method="post" accept-charset="UTF-8" id="ssl-edit" class="{% if newerRun %}disabled-content{% endif %}">
+
+
+            {{ csrfInput() }}
+            {{ actionInput('craft-bastion/base/save-settings') }}
+            {{ hiddenInput('settingsType', 'settings_ssl' ) }}
+
+
+
+            {{ forms.lightswitchField({
+                label: "Send SSL expiry reminders?"|t('craft-bastion'),
+                id: 'enableCertificateReminder',
+                name: 'settings[enableCertificateReminder]',
+                on: settings.enableCertificateReminder,
+                toggle: 'certificateReminderRecipientsCont',
+                disabled: newerRun?true:false
+            }) }}
+            <div id="certificateReminderRecipientsCont">
+                {{ forms.textField({
+                    label: "Notification Emails"|t('craft-bastion'),
+                    id: 'certificateReminderRecipients',
+                    name: 'settings[certificateReminderRecipients]',
+                    value: settings.certificateReminderRecipients,
+                    class: 'required',
+                    instructions: "sslExpiryDateDescription"|t('craft-bastion')
+                }) }}
+            </div>
+
+
+
+        </form>
+    </div>
+    <div class="so-footer">
+        <div class="so-notice"></div>
+        <div class="flex-grow"></div>
+        <div class="flex flex-nowrap">
+            <button type="button" class="btn js-popup-close">{{ 'Cancel'|t('craft-bastion') }}</button>
+            <div class="{% if newerRun %}disabled-content{% endif %}">
+                <button type="submit" class="btn submit" form="ssl-edit">{{ 'Save'|t('craft-bastion') }}</button>
+            </div>
+
+        </div>
+    </div>
+{% endblock %}
+

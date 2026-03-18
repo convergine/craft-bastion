@@ -1,0 +1,101 @@
+<!-- Disk Space Status Card -->
+{% set diskUsed = diskSpaceData.usedDisplay ?? 0 %}
+{% set diskUsedUnitFull = diskSpaceData.usedUnitFull ?? 'GIGABYTES' %}
+{% set diskTotal = diskSpaceData.totalDisplay ?? 0 %}
+{% set diskTotalUnit = diskSpaceData.totalUnit ?? 'GB' %}
+{% set diskPercentage = diskSpaceData.percentage ?? 0 %}
+{% set diskStatus = diskSpaceData.status ?? 'success' %}
+{% set hasError = diskSpaceData.error ?? false %}
+
+<section class="card disk-space-card">
+	<div class="card-header">
+		<h3>{{ 'Disk Space Status'|t('craft-bastion') }}</h3>
+		<button class="settings-btn" aria-label="Disk Space Settings" data-settings="disk-space-settings">
+            <svg width="21" height="17" viewBox="0 0 21 17" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M2.77258 0.5V9.72855" stroke="#7B8793" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M17.8165 0.5V8.009" stroke="#7B8793" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M10.2902 0.5V1.71838" stroke="#7B8793" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M2.77257 14.2737C4.02768 14.2737 5.04515 13.2562 5.04515 12.0011C5.04515 10.746 4.02768 9.72852 2.77257 9.72852C1.51747 9.72852 0.5 10.746 0.5 12.0011C0.5 13.2562 1.51747 14.2737 2.77257 14.2737Z" stroke="#7B8793"/>
+        <path d="M9.8927 15.855C9.8927 15.6216 10.0742 15.4402 10.2902 15.4402C10.5148 15.4402 10.6963 15.6216 10.6963 15.855H9.8927ZM9.8927 16.3388V15.855H10.6963V16.3388H9.8927ZM10.6963 16.3388C10.6963 16.5635 10.5148 16.745 10.2902 16.745C10.0742 16.745 9.8927 16.5635 9.8927 16.3388H10.6963Z" fill="#7B8793"/>
+        <path d="M10.2902 6.28953C11.5453 6.28953 12.5628 5.27206 12.5628 4.01696C12.5628 2.76185 11.5453 1.74438 10.2902 1.74438C9.0351 1.74438 8.01764 2.76185 8.01764 4.01696C8.01764 5.27206 9.0351 6.28953 10.2902 6.28953Z" stroke="#7B8793"/>
+        <path d="M17.8165 12.5283C19.0716 12.5283 20.089 11.5108 20.089 10.2557C20.089 9.00062 19.0716 7.98315 17.8165 7.98315C16.5613 7.98315 15.5439 9.00062 15.5439 10.2557C15.5439 11.5108 16.5613 12.5283 17.8165 12.5283Z" stroke="#7B8793"/>
+        <path d="M2.77258 14.5415V16.3388" stroke="#7B8793" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M10.2902 6.80786V16.3388" stroke="#7B8793" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M17.8165 12.5195V16.3388" stroke="#7B8793" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        </button>
+	</div>
+	<div class="card-content">
+		{% if hasError %}
+			<div class="disk-space-error-message">
+				{{ diskSpaceData.message ?? 'Unable to determine disk space'|t('craft-bastion') }}
+			</div>
+		{% else %}
+			<div class="disk-space-container">
+				<div class="disk-space-chart-wrapper">
+					<svg class="disk-space-chart" viewBox="0 0 200 200" width="85" height="85">
+						<!-- Background circle -->
+						<circle
+							cx="100"
+							cy="100"
+							r="85"
+							fill="none"
+							stroke="#E5E7EB"
+							stroke-width="20"
+						/>
+						<!-- Progress circle -->
+						<circle
+							class="disk-space-progress disk-space-{{ diskStatus }}"
+							cx="100"
+							cy="100"
+							r="85"
+							fill="none"
+							stroke-width="20"
+							stroke-linecap="butt"
+							transform="rotate(-90 100 100)"
+							data-percentage="{{ diskPercentage }}"
+						/>
+						<!-- Storage icon in center -->
+						<g transform="translate(75, 75)">
+							<svg width="50" height="50" viewBox="0 0 24 24" fill="none">
+								<path d="M20.48 9.61002C20.3896 7.87947 19.7019 6.2338 18.5342 4.95345C17.3664 3.67309 15.7908 2.83727 14.0759 2.5884C12.3609 2.33953 10.6127 2.69302 9.1292 3.58863C7.64566 4.48423 6.51858 5.86655 5.94 7.50002" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
+								<path d="M17.5 17.5H19.5C20.5609 17.5 21.5783 17.0786 22.3284 16.3284C23.0786 15.5783 23.5 14.5609 23.5 13.5C23.5 12.4391 23.0786 11.4217 22.3284 10.6716C21.5783 9.92143 20.5609 9.5 19.5 9.5" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
+								<path d="M8.5 8.5C7.63284 7.85409 6.58127 7.50357 5.5 7.5C4.17392 7.5 2.90215 8.02678 1.96447 8.96447C1.02678 9.90215 0.5 11.1739 0.5 12.5C0.5 13.8261 1.02678 15.0979 1.96447 16.0355C2.90215 16.9732 4.17392 17.5 5.5 17.5H7.5" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
+								<path d="M16.83 14.5H12.5L11.5 13.5H8.17C7.99231 13.5 7.82189 13.5706 7.69624 13.6962C7.57059 13.8219 7.5 13.9923 7.5 14.17V20.84C7.5 21.0177 7.57059 21.1881 7.69624 21.3138C7.82189 21.4394 7.99231 21.51 8.17 21.51H16.84C17.0177 21.51 17.1881 21.4394 17.3138 21.3138C17.4394 21.1881 17.51 21.0177 17.51 20.84V15.17C17.51 15.0812 17.4924 14.9932 17.4581 14.9113C17.4238 14.8293 17.3735 14.755 17.3102 14.6927C17.247 14.6303 17.1719 14.5812 17.0895 14.5481C17.007 14.515 16.9188 14.4987 16.83 14.5Z" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
+							</svg>
+						</g>
+					</svg>
+				</div>
+				<div class="disk-space-info">
+					<div class="disk-space-value disk-space-{{ diskStatus }}">{{ diskUsed }}</div>
+					<div class="disk-space-text">
+						<span class="disk-space-label">{{ diskUsedUnitFull }} {{ 'USED'|t('craft-bastion') }}</span>
+						<span class="disk-space-total">{{ 'OUT OF'|t('craft-bastion') }} {{ diskTotal }} {{ diskTotalUnit }}</span>
+					</div>
+				</div>
+			</div>
+		{% endif %}
+	</div>
+</section>
+
+{% js %}
+document.addEventListener('DOMContentLoaded', function() {
+    const progressCircle = document.querySelector('.disk-space-progress');
+    if (progressCircle) {
+        const percentage = parseFloat(progressCircle.getAttribute('data-percentage'));
+        const radius = 85;
+        const circumference = 2 * Math.PI * radius;
+        const offset = circumference - (circumference * percentage / 100);
+
+        // Set initial state
+        progressCircle.style.strokeDasharray = circumference;
+        progressCircle.style.strokeDashoffset = circumference;
+
+        // Animate after a short delay
+        setTimeout(() => {
+            progressCircle.style.strokeDashoffset = offset;
+        }, 100);
+    }
+});
+{% endjs %}
+

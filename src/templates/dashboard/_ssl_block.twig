@@ -1,0 +1,103 @@
+{% set newerRun = sslData|length ==0 %}
+{% set lastCheckTime = sslData.summary is defined and sslData.summary.lastCheck?(sslData.summary.lastCheck / 1000)|round : 0 %}
+{% set lastCheckTimeAgo = lastCheckTime > 0 ? craft.app.formatter.asRelativeTime( lastCheckTime | date('c') ) :'never' %}
+<!-- SSL Status Card -->
+<section class="card ssl-card">
+    <div class="card-header">
+        <h3>{{ 'SSL Status'|t('craft-bastion') }}</h3>
+        <button class="settings-btn" aria-label="SSL Status Settings" data-settings="ssl-settings">
+            <svg width="21" height="17" viewBox="0 0 21 17" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M2.77258 0.5V9.72855" stroke="#7B8793" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M17.8165 0.5V8.009" stroke="#7B8793" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M10.2902 0.5V1.71838" stroke="#7B8793" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M2.77257 14.2737C4.02768 14.2737 5.04515 13.2562 5.04515 12.0011C5.04515 10.746 4.02768 9.72852 2.77257 9.72852C1.51747 9.72852 0.5 10.746 0.5 12.0011C0.5 13.2562 1.51747 14.2737 2.77257 14.2737Z" stroke="#7B8793"/>
+            <path d="M9.8927 15.855C9.8927 15.6216 10.0742 15.4402 10.2902 15.4402C10.5148 15.4402 10.6963 15.6216 10.6963 15.855H9.8927ZM9.8927 16.3388V15.855H10.6963V16.3388H9.8927ZM10.6963 16.3388C10.6963 16.5635 10.5148 16.745 10.2902 16.745C10.0742 16.745 9.8927 16.5635 9.8927 16.3388H10.6963Z" fill="#7B8793"/>
+            <path d="M10.2902 6.28953C11.5453 6.28953 12.5628 5.27206 12.5628 4.01696C12.5628 2.76185 11.5453 1.74438 10.2902 1.74438C9.0351 1.74438 8.01764 2.76185 8.01764 4.01696C8.01764 5.27206 9.0351 6.28953 10.2902 6.28953Z" stroke="#7B8793"/>
+            <path d="M17.8165 12.5283C19.0716 12.5283 20.089 11.5108 20.089 10.2557C20.089 9.00062 19.0716 7.98315 17.8165 7.98315C16.5613 7.98315 15.5439 9.00062 15.5439 10.2557C15.5439 11.5108 16.5613 12.5283 17.8165 12.5283Z" stroke="#7B8793"/>
+            <path d="M2.77258 14.5415V16.3388" stroke="#7B8793" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M10.2902 6.80786V16.3388" stroke="#7B8793" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M17.8165 12.5195V16.3388" stroke="#7B8793" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+        </button>
+    </div>
+    <div class="card-content">
+        <div class="progress-bar" id="ssl-progress-bar"><span></span></div>
+        {% if newerRun %}
+
+            <div class="ssl-header">
+                <span id="ssl-grade" class="badge">N/A</span>
+                <div class="ssl-info">
+                    <p class="ssl-details" id="ssl-last-check">{{ 'Last run'|t('craft-bastion') }}: {{ 'never'|t('craft-bastion') }}</p>
+                    
+                </div>
+            </div>
+            <ul class="ssl-flags hidden" id="ssl-flags">
+                <li class="icon icon-inactive">{{ 'Protocol support'|t('craft-bastion') }}</li>
+                <li class="icon icon-inactive">{{ 'Certificate'|t('craft-bastion') }}</li>
+                <li class="icon icon-inactive">HSTS</li>
+                <li class="icon icon-inactive">{{ 'Cipher strength'|t('craft-bastion') }} 0%</li>
+                <li class="icon icon-inactive">{{ 'Expired at'|t('craft-bastion') }}</li>
+            </ul>
+            <div class="ssl-links">
+                <p class="ssl-details info-icon" id="ssl-details"><a href="#">{{ 'What does my score mean?'|t('craft-bastion') }}</a></p>
+
+                <p><a href="https://www.ssllabs.com/analyze.html?d={{ craft.app.sites.getPrimarySite.getBaseUrl|url_encode }}"
+                          target="_blank">{{ 'View detailed report on Qualys SSL Labs'|t('craft-bastion') }}</a></p>
+            </div>
+
+
+        {% elseif sslData.summary.ssl_status == 'completed' %}
+
+
+            <div class="ssl-header">
+                <span id="ssl-grade" class="badge badge-{{ sslData.summary.grade.status }}">{{ sslData.summary.grade.details }}</span>
+                <div class="ssl-info">
+                    <p class="ssl-details" id="ssl-last-check">{{ 'Last run'|t('craft-bastion') }}: {{ lastCheckTimeAgo }}</p>
+                    
+                </div>
+            </div>
+            <ul class="ssl-flags" id="ssl-flags">
+                {% for item in sslData.summary.info %}
+                    <li class="icon icon-{{ item.status }}">{{ item.details }}</li>
+                {% endfor %}
+            </ul>
+            <div class="ssl-links">
+                <p class="ssl-details info-icon" id="ssl-details">{{ sslData.summary.message|raw }}</p>
+
+                <p><a href="https://www.ssllabs.com/analyze.html?d={{ craft.app.sites.getPrimarySite.getBaseUrl|url_encode }}"
+                          target="_blank">{{ 'View detailed report on Qualys SSL Labs'|t('craft-bastion') }}</a></p>
+            </div>
+
+        {% else %}
+            <div class="ssl-header">
+                <span id="ssl-grade" class="badge">N/A</span>
+                <div class="ssl-info">
+                    <p class="ssl-details" id="ssl-last-check">{{ 'Last run'|t('craft-bastion') }}: {{ lastCheckTimeAgo }}</p>
+                    
+                </div>
+            </div>
+            <ul class="ssl-flags" id="ssl-flags">
+                <li class="icon icon-inactive">{{ 'Protocol support'|t('craft-bastion') }}</li>
+                <li class="icon icon-inactive">{{ 'Certificate'|t('craft-bastion') }}</li>
+                <li class="icon icon-inactive">HSTS</li>
+                <li class="icon icon-inactive">{{ 'Cipher strength'|t('craft-bastion') }} 0%</li>
+                <li class="icon icon-inactive">{{ 'Expired at'|t('craft-bastion') }}</li>
+            </ul>
+            <div class="ssl-links">
+                <p class="ssl-details info-icon" id="ssl-details"><a href="#">{{ 'What does my score mean?'|t('craft-bastion') }}</a></p>
+
+                <p><a href="https://www.ssllabs.com/analyze.html?d={{ craft.app.sites.getPrimarySite.getBaseUrl|url_encode }}"
+                          target="_blank">{{ 'View detailed report on Qualys SSL Labs'|t('craft-bastion') }}</a></p>
+            </div>
+            {% js %}
+            document.addEventListener('DOMContentLoaded', () => {
+                window.dashboard.sslData.runSSLCheck(false)
+            })
+            {% endjs %}
+        {% endif %}
+        <button class="btn btn-secondary" id="ssl-check-btn" aria-label="Run SSL health diagnostic">
+        {{ 'Check SSL health'|t('craft-bastion') }}
+        </button>
+    </div>
+    <span id="progresss"></span>
+</section>

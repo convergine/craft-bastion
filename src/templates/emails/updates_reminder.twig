@@ -1,0 +1,27 @@
+<p>Hello,</p>
+
+<p>Here is your scheduled update summary for {{ siteName }}.</p>
+
+<p>The following updates are available:</p>
+
+{% if updates.cms %}
+    <p>CraftCMS core:</p>
+    {% for update in updates.cms %}
+        <p>- {{ update.coreUpdateVersion }} ({{ update.coreReleaseDate|date() }})</p>
+    {% endfor %}
+{% endif %}
+
+{% if updates.plugins %}
+    <p>Plugins:</p>
+    {% for plugin in updates.plugins %}
+    <p>- {{ plugin.name }}: {{ plugin.currentVersion }} → {{ plugin.latestVersion }}</p>
+    {% endfor %}
+{% endif %}
+
+<p>We recommend updating at your earliest convenience to ensure optimal security and performance.</p>
+
+<p>You are receiving this email because Bastion is configured to send update notifications for this website to your address.</p>
+
+<p>—</p>
+<p>Bastion</p>
+<p>Your CraftCMS Security Plugin.</p>

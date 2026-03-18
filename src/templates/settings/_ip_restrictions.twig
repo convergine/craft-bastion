@@ -1,0 +1,210 @@
+{% extends '_layouts/cp' %}
+
+{% set plugin = craft.app.getModule('craft-bastion') %}
+{% set crumbs = [
+    { label: 'Craft Bastion'|t('craft-bastion')  , url: url('craft-bastion') },
+    { label: 'IP Restrictions'|t('craft-bastion')  , url: url('craft-bastion/ip-restrictions') },
+] %}
+{% set selectedSubnavItem = 'ip-restrictions' %}
+
+{% set title = 'IP Restrictions'|t('craft-bastion') %}
+{% set fullPageForm = true %}
+{# % set contentNotice ='ipRestrictionsDescription'|t('craft-bastion') %#}
+
+{% block content %}
+
+
+    {% import "_includes/forms" as forms %}
+    {{ actionInput('craft-bastion/settings/save-settings') }}
+    {{ hiddenInput('settingsType','settings_restrict') }}
+
+    <p>{{ 'ipRestrictionsDescription'|t('craft-bastion')|raw }}</p>
+    <hr>
+
+    <p class="success">{{ "Your current IP"|t('craft-bastion') }}: <code><b>{{ currentIp }}</b></code></p>
+
+    {% if not settings.hasErrors()%}
+        {% if settings.getIpEnabled() and restrict.ipAllowedForFront() == false %}
+            <p class="warning">{{ "Your current IP <b>NOT</b> in frontend white list"|t('craft-bastion')|raw }}</p>
+        {% endif %}
+
+        {% if settings.getIpEnabledCP() and restrict.ipAllowedForCp() == false %}
+            <p class="warning">{{ "Your current IP <b>NOT</b> in control-panel white list"|t('craft-bastion')|raw }}</p>
+        {% endif %}
+    {% endif %}
+
+    <hr>
+
+    {{ 'ipRestrictorDescription'|t('craft-bastion')|raw }}
+
+
+    {% namespace "settings" %}
+        {{ forms.lightswitchField({
+            label: 'Enabled for the control panel'|t('craft-bastion'),
+            id: 'ipEnabledCp',
+            name: 'ipEnabledCp',
+            on: settings.ipEnabledCp,
+            toggle: 'toggleCP',
+            instructions: 'enableForCpDescription'|t('craft-bastion'),
+            warning: (craft.app.config.getConfigFromFile('craft-bastion')['ipEnabledCp'] is defined ? 'overridden'|t('craft-bastion', params = { name : 'ipEnabledCp' }) : '')
+        }) }}
+
+        <div id="toggleCP"{% if settings.ipEnabledCp is not defined or not settings.ipEnabledCp %} class="hidden"{% endif %}>
+            {{ forms.editableTableField({
+                label: 'Whitelist for the control panel'|t('craft-bastion'),
+                id: 'ipWhitelistCp',
+                name: 'ipWhitelistCp',
+                cols: [
+                    {
+                        type: 'multiline',
+                        heading: 'IP/CIDR/Range Address'|t('craft-bastion'),
+                        placeholder: 'e.g. 192.168.1.1/24',
+                        width: '25%'
+                    },
+                    {
+                        type: 'multiline',
+                        heading: 'Notes'|t('craft-bastion'),
+                        width: '75%'
+                    }
+                ],
+                rows: settings.ipWhitelistCp,
+                errors: settings.getErrors('ipWhitelistCp'),
+                addRowLabel: 'Add an IP/CIDR/Range Address'|t('craft-bastion'),
+                allowAdd: true,
+                allowDelete: true,
+                allowReorder: true,
+                warning: (craft.app.config.getConfigFromFile('craft-bastion')['ipWhitelistCp'] is defined ? 'overridden'|t('craft-bastion', params = { name : 'ipWhitelistCp' }) : '')
+            }) }}
+
+            {{ forms.selectizeField({
+                label: 'Restriction method for the control panel'|t('craft-bastion'),
+                id: 'ipRestrictionMethodCp',
+                name: 'ipRestrictionMethodCp',
+                options: settings.getIpRestrictionMethodsOptions(),
+                includeEnvVars: true,
+                value: settings.ipRestrictionMethodCp,
+                errors: settings.getErrors('ipRestrictionMethodCp'),
+                toggle: 'ipRestrictionMethodCp',
+                targetPrefix: 'toggleCPRestrictionMethod',
+                warning: (craft.app.config.getConfigFromFile('craft-bastion')['ipRestrictionMethodCp'] is defined ? 'overridden'|t('craft-bastion', params = { name : 'ipRestrictionMethodCp' }) : '')
+            }) }}
+
+            <div id="toggleCPRestrictionMethodredirect"{% if settings.ipRestrictionMethodCp != 'redirect' %} class="hidden"{% endif %}>
+                {{ forms.autosuggestField({
+                    label: 'Redirect URL'|t('craft-bastion'),
+                    id: 'ipRedirectCp',
+                    name: 'ipRedirectCp',
+                    suggestEnvVars: true,
+                    suggestAliases: true,
+                    value: settings.ipRedirectCp,
+                    errors: settings.getErrors('ipRedirectCp')|unique,
+                    warning: (craft.app.config.getConfigFromFile('craft-bastion')['ipRedirectCp'] is defined ? 'overridden'|t('craft-bastion', params = { name : 'ipRedirectCp' }) : '')
+                }) }}
+            </div>
+
+            <div id="toggleCPRestrictionMethodtemplate"{% if settings.ipRestrictionMethodCp != 'template' %} class="hidden"{% endif %}>
+                {{ forms.autosuggestField({
+                    label: 'Template'|t('craft-bastion'),
+                    id: 'ipTemplateCp',
+                    name: 'ipTemplateCp',
+                    suggestEnvVars: true,
+                    suggestAliases: true,
+                    suggestions: craft.cp.getTemplateSuggestions(),
+                    value: settings.ipTemplateCp,
+                    errors: settings.getErrors('ipTemplateCp')|unique,
+                    warning: (craft.app.config.getConfigFromFile('craft-bastion')['ipTemplateCp'] is defined ? 'overridden'|t('craft-bastion', params = { name : 'ipTemplateCp' }) : '')
+                }) }}
+            </div>
+        </div>
+
+        <hr/>
+
+        {{ forms.lightswitchField({
+            label: 'Enabled for the frontend'|t('craft-bastion'),
+            id: 'ipEnabled',
+            name: 'ipEnabled',
+            on: settings.ipEnabled,
+            toggle: 'toggleFE',
+            instructions:'enableForFrontDescription'|t('craft-bastion'),
+            warning: (craft.app.config.getConfigFromFile('craft-bastion')['ipEnabled'] is defined ? 'overridden'|t('craft-bastion', params = { name : 'ipEnabled' }) : '')
+        }) }}
+
+        <div id="toggleFE"{% if settings.ipEnabled is not defined or not settings.ipEnabled %} class="hidden"{% endif %}>
+            {{ forms.editableTableField({
+                label: 'Whitelist for the frontend'|t('craft-bastion'),
+                id: 'ipWhitelist',
+                name: 'ipWhitelist',
+                cols: [
+                    {
+                        type: 'multiline',
+                        heading: 'IP/CIDR/Range Address'|t('craft-bastion'),
+                        placeholder: 'e.g. 192.168.1.1/24',
+                        width: '25%'
+                    },
+                    {
+                        type: 'multiline',
+                        heading: 'Notes'|t('craft-bastion'),
+                        width: '75%'
+                    }
+                ],
+                rows: settings.ipWhitelist,
+                errors: settings.getErrors('ipWhitelist'),
+                addRowLabel: 'Add an IP/CIDR/Range Address'|t('craft-bastion'),
+                allowAdd: true,
+                allowDelete: true,
+                allowReorder: true,
+                warning: (craft.app.config.getConfigFromFile('craft-bastion')['ipWhitelist'] is defined ? 'overridden'|t('craft-bastion', params = { name : 'ipWhitelist' }) : '')
+            }) }}
+
+            {{ forms.selectizeField({
+                label: 'Restriction method for the frontend'|t('craft-bastion'),
+                id: 'ipRestrictionMethod',
+                name: 'ipRestrictionMethod',
+                options: settings.getIpRestrictionMethodsOptions(),
+                includeEnvVars: true,
+                value: settings.ipRestrictionMethod,
+                errors: settings.getErrors('ipRestrictionMethod'),
+                toggle: 'ipRestrictionMethod',
+                targetPrefix: 'toggleFERestrictionMethod',
+                warning: (craft.app.config.getConfigFromFile('craft-bastion')['ipRestrictionMethod'] is defined ? 'overridden'|t('craft-bastion', params = { name : 'ipRestrictionMethod' }) : '')
+            }) }}
+
+            <div id="toggleFERestrictionMethodredirect"{% if settings.ipRestrictionMethod != 'redirect' %} class="hidden"{% endif %}>
+                {{ forms.autosuggestField({
+                    label: 'Redirect URL'|t('craft-bastion'),
+                    id: 'ipRedirect',
+                    name: 'ipRedirect',
+                    suggestEnvVars: true,
+                    suggestAliases: true,
+                    value: settings.ipRedirect,
+                    errors: settings.getErrors('ipRedirect')|unique,
+                    warning: (craft.app.config.getConfigFromFile('craft-bastion')['ipRedirect'] is defined ? 'overridden'|t('craft-bastion', params = { name : 'ipRedirect' }) : '')
+                }) }}
+            </div>
+
+            <div id="toggleFERestrictionMethodtemplate"{% if settings.ipRestrictionMethod != 'template' %} class="hidden"{% endif %}>
+                {{ forms.autosuggestField({
+                    label: 'Template'|t('craft-bastion'),
+                    id: 'ipTemplate',
+                    name: 'ipTemplate',
+                    suggestEnvVars: true,
+                    suggestAliases: true,
+                    suggestions: craft.cp.getTemplateSuggestions(),
+                    value: settings.ipTemplate,
+                    errors: settings.getErrors('ipTemplate')|unique,
+                    warning: (craft.app.config.getConfigFromFile('craft-bastion')['ipTemplate'] is defined ? 'overridden'|t('craft-bastion', params = { name : 'ipTemplate' }) : '')
+                }) }}
+            </div>
+        </div>
+    {% endnamespace %}
+{% endblock %}
+{% css %}
+    #content-notice {
+    padding:20px 25px !important;
+    background-color: #fff;
+    }
+{% endcss %}
+{% js %}
+    {# language=JavaScript #}
+
+{% endjs %}

@@ -1,0 +1,29 @@
+{% import "_includes/forms" as forms %}
+<div id="protection" class="hidden">
+    {{ 'extraHeadersSettingsDescription'|t('craft-bastion')|raw }}
+    {% namespace "settings" %}
+
+        {{ forms.editableTableField({
+            label: "HTTP Response Headers"|t('craft-bastion'),
+            name: 'cspHeaderProtection',
+            cols: [
+                {
+                    type: 'singleline',
+                    heading: 'Header',
+                    width: '25%',
+                    code: true,
+                },
+                {
+                    type: 'singleline',
+                    heading: 'Value',
+                    code: true,
+                },
+            ],
+            rows: settings.cspHeaderProtection,
+            addRowLabel: 'Add a header',
+            allowAdd: true,
+            allowDelete: true,
+            allowReorder: true,
+        }) }}
+    {% endnamespace %}
+</div>

@@ -1,0 +1,58 @@
+{% extends '_layouts/cp' %}
+{% import "_includes/forms" as forms %}
+{% set plugin = craft.app.getModule('craft-bastion') %}
+{% set crumbs = [
+    { label: 'Craft Bastion'|t('craft-bastion')  , url: url('craft-bastion') },
+    { label: 'CSP'|t('craft-bastion')  , url: url('craft-bastion/csp') },
+] %}
+{% set selectedSubnavItem = 'csp' %}
+
+{% set title = 'Content Security Policy (CSP) Settings'|t('craft-bastion') %}
+{# % set contentNotice ='cspDescription'|t('craft-bastion') %#}
+{% set fullPageForm = false %}
+
+{% set tabs = {
+    "settings": {label: "Settings"|t('app'), url: "#settings"},
+    "policies": {label: "CSP Rules"|t('craft-bastion'), url: "#policy"},
+    "protection": {label: "Additional Security Headers"|t('craft-bastion'), url: "#protection"},
+
+} %}
+
+{% block actionButton %}
+    <button type="submit" class="btn submit" form="cspSettingsForm">Save</button>
+{% endblock %}
+{% block content %}
+
+    <form method="post" id="cspDefaultSettingsForm">
+        {{ actionInput('craft-bastion/settings/set-default-csp') }}
+        {{ csrfInput() }}
+    </form>
+
+    <form method="post" id="cspSettingsForm">
+
+        {{ actionInput('craft-bastion/settings/save-settings') }}
+        {{ hiddenInput('settingsType','settings_csp') }}
+        {{ csrfInput() }}
+
+        {# -- General settings -- #}
+        {% include "craft-bastion/settings/csp/_settings" %}
+
+        {# -- Policy settings -- #}
+        {% include "craft-bastion/settings/csp/_policy" %}
+
+        {# -- Header protection settings -- #}
+        {% include "craft-bastion/settings/csp/_protection" %}
+
+
+    </form>
+{% endblock %}
+{% css %}
+    #content-notice {
+    padding:20px 25px !important;
+    background-color: #fff;
+    }
+{% endcss %}
+{% js %}
+{# language=JavaScript #}
+
+{% endjs %}
